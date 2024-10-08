@@ -1,5 +1,7 @@
 import sys
-from logger import logger
+
+from src.logger import logging
+
 
 
 # exc_tb contains all the information about the error. In which file, line number and error
