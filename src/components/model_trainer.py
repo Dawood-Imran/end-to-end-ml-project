@@ -55,7 +55,47 @@ class ModelTrainer:
                 "Linear Regressor": LinearRegression(),
             }
 
-            model_report:dict = evaluate_model(X_train,X_test,y_train,y_test,models = models)
+            param_grid = {
+                "Random Forest": {
+                    'n_estimators': [100, 200, 300],
+                    'max_depth': [None, 10, 20, 30],
+                    #'min_samples_split': [2, 5, 10],
+                    'min_samples_leaf': [1, 2, 4],
+                    #'bootstrap': [True, False]
+                },
+                "Decision Tree": {
+                    'max_depth': [None, 10, 20, 30],
+                    'min_samples_split': [2, 5, 10],
+                    #'min_samples_leaf': [1, 2, 4],
+                    #'criterion': ['squared_error', 'friedman_mse', 'absolute_error', 'poisson']
+                },
+                "Gradient Boosting": {
+                    #'n_estimators': [100, 200, 300],
+                    'learning_rate': [0.01, 0.1, 0.05],
+                    'max_depth': [3, 5, 10],
+                    'min_samples_split': [2, 5, 10],
+                    #'min_samples_leaf': [1, 2, 4]
+                },
+                "AdaBoost": {
+                    'n_estimators': [50, 100, 200],
+                    'learning_rate': [0.01, 0.1, 0.5, 1.0],
+                    #'loss': ['linear', 'square', 'exponential']
+                },
+                "K-Neighbors Regressor": {
+                    'n_neighbors': [3, 5, 10],
+                    #'weights': ['uniform', 'distance'],
+                    #'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
+                    'leaf_size': [10, 30, 50]
+                },
+                "Linear Regressor": {
+                    #'fit_intercept': [True, False],
+                    #'normalize': [True, False],
+                    #'copy_X': [True, False]
+                }   
+            }
+
+
+            model_report:dict = evaluate_model(X_train,X_test,y_train,y_test,models = models,param = param_grid)
 
             best_model_score = max(sorted(model_report.values()))
 
