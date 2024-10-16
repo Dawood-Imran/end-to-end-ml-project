@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Predictor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        form {
+            display: grid;
+            gap: 1rem;
+        }
+        label {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 0.25rem;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 1rem;
+            }
+        }
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e8f4fd;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        #result {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e8f4fd;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Performance Predictor</h1>
+        <form id="predictionForm" action="/predictdata" method="post">
+            <label for="gender">Gender:</label>
+            <select name="gender" id="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <label for="race_ethnicity">Race/Ethnicity:</label>
+            <select name="race_ethnicity" id="race_ethnicity" required>
+                <option value="group A">Group A</option>
+                <option value="group B">Group B</option>
+                <option value="group C">Group C</option>
+                <option value="group D">Group D</option>
+                <option value="group E">Group E</option>
+            </select>
+
+            <label for="parental_level_of_education">Parental Level of Education:</label>
+            <select name="parental_level_of_education" id="parental_level_of_education" required>
+                <option value="some high school">Some High School</option>
+                <option value="high school">High School</option>
+                <option value="some college">Some College</option>
+                <option value="associate's degree">Associate's Degree</option>
+                <option value="bachelor's degree">Bachelor's Degree</option>
+                <option value="master's degree">Master's Degree</option>
+            </select>
+
+            <label for="lunch">Lunch Type:</label>
+            <select name="lunch" id="lunch" required>
+                <option value="standard">Standard</option>
+                <option value="free/reduced">Free/Reduced</option>
+            </select>
+
+            <label for="test_preparation_course">Test Preparation Course:</label>
+            <select name="test_preparation_course" id="test_preparation_course" required>
+                <option value="none">None</option>
+                <option value="completed">Completed</option>
+            </select>
+
+            <label for="reading_score">Reading Score:</label>
+            <input type="number" name="reading_score" id="reading_score" min="0" max="100" required>
+
+            <label for="writing_score">Writing Score:</label>
+            <input type="number" name="writing_score" id="writing_score" min="0" max="100" required>
+
+            <button type="submit" id="submitBtn">Predict Math Score</button>
+        </form>
+        <div id="loading">Predicting...</div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var submitBtn = document.getElementById('submitBtn');
+            var loadingDiv = document.getElementById('loading');
+            var resultDiv = document.getElementById('result');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Predicting...';
+            loadingDiv.style.display = 'block';
+            resultDiv.style.display = 'none';
+
+            var formData = new FormData(this);
+
+            fetch('/predictdata', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Predict Math Score';
+                loadingDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = 'Predicted Math Score: ' + data.result;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Predict Math Score';
+                loadingDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = 'An error occurred. Please try again.';
+            });
+        });
+    </script>
+</body>
+</html>
