@@ -38,5 +38,5 @@ def predict_datapoint():
         return jsonify({'result': round(float(results[0]), 2)})
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+if __name__ == "__main__":
+    application.run(host='0.0.0.0')
